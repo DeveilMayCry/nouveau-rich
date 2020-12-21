@@ -1,5 +1,6 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
+const { default: Axios } = require('axios');
 const vscode = require('vscode');
 
 // this method is called when your extension is activated
@@ -25,13 +26,32 @@ function activate(context) {
 	});
 
 	context.subscriptions.push(disposable);
+
+	let url = "https://api.binance.com/api/v3/ticker/price";
+	Axios.get(url).then(response => {
+		let filter = ["BCH"];
+		let unit = "USDT"
+		var symbols = response.data.filter(a => filter.indexOf(a.symbol.replace(unit, "")) !== -1);
+		var myStatusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left);
+		myStatusBarItem.text = "11111111"
+		myStatusBarItem.color = "lightgreen";
+		myStatusBarItem.show();
+		context.subscriptions.push(myStatusBarItem);
+	}).catch(err => console.error(err));
 }
 exports.activate = activate;
 
 // this method is called when your extension is deactivated
-function deactivate() {}
+function deactivate() { }
 
 module.exports = {
 	activate,
 	deactivate
+}
+
+function search(data, filter) {
+	data.forEach(a => {
+		var origin = a.symbol.replace("USDT", "");
+		return a === origin;
+	});
 }

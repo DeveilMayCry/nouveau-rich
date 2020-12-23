@@ -31,20 +31,20 @@ function activate(context) {
 	let url = "https://api.binance.com/api/v3/ticker/price";
 	let filter = ["BTC", "BCH", "LTC", "ETH"];
 	let unit = "USDT";
-	var items = filter.map(a => {
+	var statusBarItems = filter.map(a => {
 		var myStatusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left);
 		myStatusBarItem.color = "lightgreen";
 		myStatusBarItem.symbol = a;
 		myStatusBarItem.show();
 		return myStatusBarItem
 	})
-	context.subscriptions.push(items);
+	context.subscriptions.push(statusBarItems);
 
 	setInterval(() => {
 		Axios.get(url).then(response => {
 			var symbols = response.data.filter(a => filter.indexOf(a.symbol.replace(unit, "")) !== -1);
 			symbols.forEach(a => {
-				var myStatusBarItem = items.filter(b => b.symbol === a.symbol.replace(unit, ""))[0];
+				var myStatusBarItem = statusBarItems.filter(b => b.symbol === a.symbol.replace(unit, ""))[0];
 				myStatusBarItem.text = `${a.symbol} $${Math.floor(a.price * 100) / 100}`
 			})
 		}).catch(err => console.error(err));
@@ -58,11 +58,4 @@ function deactivate() { }
 module.exports = {
 	activate,
 	deactivate
-}
-
-function search(data, filter) {
-	data.forEach(a => {
-		var origin = a.symbol.replace("USDT", "");
-		return a === origin;
-	});
 }

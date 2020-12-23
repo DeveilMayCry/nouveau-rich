@@ -1,6 +1,7 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
 const { default: Axios } = require('axios');
+const { setTextRange } = require('typescript');
 const vscode = require('vscode');
 
 // this method is called when your extension is activated
@@ -28,16 +29,26 @@ function activate(context) {
 	context.subscriptions.push(disposable);
 
 	let url = "https://api.binance.com/api/v3/ticker/price";
-	Axios.get(url).then(response => {
-		let filter = ["BCH"];
-		let unit = "USDT"
-		var symbols = response.data.filter(a => filter.indexOf(a.symbol.replace(unit, "")) !== -1);
+	let filter = ["BTC", "BCH", "LTC", "ETH"];
+	let unit = "USDT";
+	var items = filter.map(a => {
 		var myStatusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left);
-		myStatusBarItem.text = "11111111"
 		myStatusBarItem.color = "lightgreen";
+		myStatusBarItem.symbol = a;
 		myStatusBarItem.show();
-		context.subscriptions.push(myStatusBarItem);
-	}).catch(err => console.error(err));
+		return myStatusBarItem
+	})
+	context.subscriptions.push(items);
+
+	setInterval(() => {
+		Axios.get(url).then(response => {
+			var symbols = response.data.filter(a => filter.indexOf(a.symbol.replace(unit, "")) !== -1);
+			symbols.forEach(a => {
+				var myStatusBarItem = items.filter(b => b.symbol === a.symbol.replace(unit, ""))[0];
+				myStatusBarItem.text = `${a.symbol} $${Math.floor(a.price * 100) / 100}`
+			})
+		}).catch(err => console.error(err));
+	}, 5000);
 }
 exports.activate = activate;
 

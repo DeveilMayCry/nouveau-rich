@@ -28,8 +28,9 @@ function activate(context) {
 
 	context.subscriptions.push(disposable);
 
+	let configuration = vscode.workspace.getConfiguration().get("rich");
 	let url = "https://api.binance.com/api/v3/ticker/price";
-	let filter = ["BTC", "BCH", "LTC", "ETH"];
+	let filter = configuration.symbols;
 	let unit = "USDT";
 	var statusBarItems = filter.map(a => {
 		var myStatusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left);

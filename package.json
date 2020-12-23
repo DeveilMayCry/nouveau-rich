@@ -20,6 +20,22 @@
 				"command": "nouveau-rich.helloWorld",
 				"title": "Hello World"
 			}
+		],
+		"configuration": [
+			{
+				"properties": {
+					"rich.symbols": {
+						"type": "array",
+						"default": [
+							"BTC",
+							"BCH",
+							"LTC",
+							"ETH"
+						],
+						"description": "你要实时观察的加密货币名称，全大写"
+					}
+				}
+			}
 		]
 	},
 	"scripts": {

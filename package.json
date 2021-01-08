@@ -28,7 +28,7 @@
 						"type": "array",
 						"default": [
 							"BTC",
-							"BCH",
+							"FIL",
 							"LTC",
 							"ETH"
 						],
